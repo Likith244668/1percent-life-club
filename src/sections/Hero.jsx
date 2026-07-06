@@ -1,25 +1,12 @@
 import { useState, useEffect } from 'react'
-import { ACCENT, STAGE, INK, MUTED } from '../theme.js'
+import { ACCENT, STAGE, INK, MUTED, INK_SOFT, INK_MUTED, HAIRLINE, SHADOW_PANEL, MQ_HERO, MQ_REDUCE } from '../theme.js'
 import Hoverable from '../components/Hoverable.jsx'
+import Plaque from '../components/Plaque.jsx'
+import { EASE, useMedia } from '../components/useReveal.js'
 import { ArrowUpRight, Play } from '../components/Icons.jsx'
 import heroImg from '../assets/hero.png'
 
 /* ------------------------------------------------------------------ hooks */
-
-// Reactive CSS media query (mirrors the helper in Header.jsx). Drives the
-// layout switch and the reduced-motion guard.
-function useMedia(query) {
-  const get = () => typeof window !== 'undefined' && window.matchMedia(query).matches
-  const [matches, setMatches] = useState(get)
-  useEffect(() => {
-    const mq = window.matchMedia(query)
-    const on = (e) => setMatches(e.matches)
-    setMatches(mq.matches)
-    mq.addEventListener ? mq.addEventListener('change', on) : mq.addListener(on)
-    return () => (mq.removeEventListener ? mq.removeEventListener('change', on) : mq.removeListener(on))
-  }, [query])
-  return matches
-}
 
 // Flips true one frame after mount so the entrance transitions can play.
 function useMounted() {
@@ -35,8 +22,6 @@ function useMounted() {
 
 /* --------------------------------------------------------------- overlay text */
 
-const EASE = 'cubic-bezier(.16,1,.3,1)'
-
 // Visually hidden but readable by screen readers / search engines.
 const srOnly = {
   position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px',
@@ -46,8 +31,8 @@ const srOnly = {
 /* ------------------------------------------------------------------- section */
 
 export default function Hero() {
-  const isMobile = useMedia('(max-width: 760px)')
-  const reduce = useMedia('(prefers-reduced-motion: reduce)')
+  const isMobile = useMedia(MQ_HERO)
+  const reduce = useMedia(MQ_REDUCE)
   const ready = useMounted()
 
   // Full-bleed offsets for the illustration. The negative top margin always
@@ -96,14 +81,14 @@ export default function Hero() {
           margin: 0,
           fontSize: 'clamp(15px,1.55vw,18px)',
           lineHeight: 1.55,
-          color: '#5C544D',
+          color: INK_MUTED,
           maxWidth: '46ch',
           marginInline: 'auto',
           ...enter(520, 'translateY(16px)'),
         }}
       >
         No extremes. No pressure. Just the quiet discipline of getting{' '}
-        <span style={{ fontFamily: "'Instrument Serif',serif", fontStyle: 'italic', fontWeight: 400, color: ACCENT, fontSize: '1.16em' }}>
+        <span style={{ fontFamily: "'Instrument Serif',serif", fontStyle: 'italic', fontWeight: 400, color: INK, fontSize: '1.16em' }}>
           one percent
         </span>{' '}
         better — until it's simply who you are.
@@ -129,7 +114,7 @@ export default function Hero() {
           }}
           hoverStyle={{ background: INK, transform: 'translateY(-2px)', boxShadow: '0 22px 46px -22px rgba(21,17,13,.6)' }}
         >
-          Begin your 1%
+          Request an invitation
           <ArrowUpRight size={16} />
         </Hoverable>
 
@@ -153,6 +138,19 @@ export default function Hero() {
           How it works
         </Hoverable>
       </div>
+
+      {/* The membership plaque — the quiet scarcity signature. On desktop it
+          hangs below the bottom-anchored block (top: 100%) so it can never
+          grow the block upward into the falling "T"; stacked, it's in flow. */}
+      {isMobile ? (
+        <div style={{ marginTop: 'clamp(16px,2vw,22px)', ...enter(720, 'translateY(12px)') }}>
+          <Plaque />
+        </div>
+      ) : (
+        <div style={{ position: 'absolute', top: 'calc(100% + 16px)', left: 0, right: 0, display: 'flex', justifyContent: 'center', ...enter(720, 'translateY(12px)') }}>
+          <Plaque />
+        </div>
+      )}
     </div>
   )
 
@@ -163,9 +161,9 @@ export default function Hero() {
         position: 'relative',
         margin: 'clamp(10px,1.3vw,18px)',
         background: STAGE,
-        border: '1px solid #EBE4DA',
+        border: `1px solid ${HAIRLINE}`,
         borderRadius: 'clamp(22px,2.4vw,36px)',
-        boxShadow: '0 50px 110px -70px rgba(46,32,18,.4)',
+        boxShadow: SHADOW_PANEL,
         padding: 'clamp(64px,6vw,84px) clamp(20px,4vw,56px) clamp(26px,3.4vw,48px)',
         overflow: 'hidden',
       }}
@@ -180,7 +178,7 @@ export default function Hero() {
 
       {/* Real headline for screen readers & SEO — the visual statement lives in
           the aria-hidden image typography below. */}
-      <h1 style={srOnly}>I can do it. Join the 1% Life Club and get one percent better every day.</h1>
+      <h1 style={srOnly}>I can do it. The 1% Life Club — a private members' club of 250 people compounding one percent a day.</h1>
 
       {/* Ambient accent glow behind the headline */}
       <div
@@ -192,7 +190,7 @@ export default function Hero() {
           transform: 'translateX(-50%)',
           width: 'min(960px,94%)',
           height: '540px',
-          background: `radial-gradient(58% 60% at 50% 42%,color-mix(in srgb,${ACCENT} 20%,transparent),transparent 72%)`,
+          background: `radial-gradient(58% 60% at 50% 42%,color-mix(in srgb,${ACCENT} 10%,transparent),transparent 72%)`,
           pointerEvents: 'none',
           zIndex: 0,
           animation: reduce ? 'none' : 'lcHeroGlow 7s ease-in-out infinite',
@@ -216,6 +214,10 @@ export default function Hero() {
           <img
             src={heroImg}
             alt="A figure leaping across the gap between two cliffs"
+            width={1536}
+            height={1024}
+            fetchPriority="high"
+            decoding="async"
             style={{ display: 'block', width: '100%', height: 'auto', ...enter(60, 'scale(1.05)') }}
           />
 
@@ -247,7 +249,7 @@ export default function Hero() {
                 fontSize: 'clamp(1.9rem,8.6vw,8rem)',
                 letterSpacing: '-.02em',
                 lineHeight: 1,
-                color: '#2B2723',
+                color: INK_SOFT,
                 pointerEvents: 'none',
                 zIndex: 2,
                 ...enter(320, 'translateY(-100%) translateX(-46px)', 'translateY(-100%)'),
@@ -269,7 +271,7 @@ export default function Hero() {
                 fontSize: 'clamp(2rem,8.4vw,8.4rem)',
                 letterSpacing: '-.005em',
                 lineHeight: 1,
-                color: '#2B2723',
+                color: INK_SOFT,
                 pointerEvents: 'none',
                 zIndex: 2,
                 ...enter(400, 'translateY(-100%) translateX(46px)', 'translateY(-100%)'),
@@ -290,7 +292,7 @@ export default function Hero() {
                 fontSize: 'clamp(2.3rem,8vw,7.5rem)',
                 letterSpacing: '-.02em',
                 lineHeight: 1,
-                color: '#2B2723',
+                color: INK_SOFT,
                 pointerEvents: 'none',
                 zIndex: 2,
                 ...enter(660, 'translateX(-50%) translateY(-170px) rotate(-38deg)', 'translateX(-50%) rotate(25deg)'),
@@ -308,7 +310,7 @@ export default function Hero() {
             <div
               aria-hidden="true"
               style={{
-                position: 'absolute', left: 0, right: 0, bottom: `calc(${floorCrop} + clamp(40px,4.8vw,86px))`, zIndex: 3,
+                position: 'absolute', left: 0, right: 0, bottom: `calc(${floorCrop} + clamp(16px,2vw,40px))`, zIndex: 3,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
                 color: MUTED, ...enter(900, 'translateY(10px)'),
               }}

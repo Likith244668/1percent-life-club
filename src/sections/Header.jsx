@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
-import { ACCENT, STAGE, INK, MUTED_SOFT } from '../theme.js'
+import { ACCENT, STAGE, INK, MUTED_SOFT, LABEL, MQ_NAV, MQ_REDUCE } from '../theme.js'
 import Hoverable from '../components/Hoverable.jsx'
+import { useMedia } from '../components/useReveal.js'
 import { ArrowUpRight } from '../components/Icons.jsx'
 
 // Primary navigation. Each id maps to a real section anchor on the page.
@@ -42,20 +43,6 @@ function useScroll() {
     }
   }, [])
   return state
-}
-
-// Reactive CSS media query — used for the layout switch and reduced motion.
-function useMedia(query) {
-  const get = () => typeof window !== 'undefined' && window.matchMedia(query).matches
-  const [matches, setMatches] = useState(get)
-  useEffect(() => {
-    const mq = window.matchMedia(query)
-    const on = (e) => setMatches(e.matches)
-    setMatches(mq.matches)
-    mq.addEventListener ? mq.addEventListener('change', on) : mq.addListener(on)
-    return () => (mq.removeEventListener ? mq.removeEventListener('change', on) : mq.removeListener(on))
-  }, [query])
-  return matches
 }
 
 // Highlights whichever section currently sits across the viewport's mid-line.
@@ -107,7 +94,7 @@ function NavLink({ item, active, onNavigate }) {
         position: 'relative',
         fontSize: '14px',
         fontWeight: 500,
-        color: on ? INK : '#6B645D',
+        color: on ? INK : LABEL,
         textDecoration: 'none',
         padding: '6px 2px',
         transition: 'color .25s',
@@ -123,7 +110,7 @@ function NavLink({ item, active, onNavigate }) {
           bottom: '-3px',
           height: '2px',
           borderRadius: '2px',
-          background: ACCENT,
+          background: INK,
           transformOrigin: 'left',
           transform: active ? 'scaleX(1)' : 'scaleX(0)',
           opacity: active ? 1 : 0,
@@ -177,8 +164,8 @@ function Burger({ open, reduce, ...rest }) {
 
 export default function Header() {
   const { scrolled, progress } = useScroll()
-  const isMobile = useMedia('(max-width: 880px)')
-  const reduce = useMedia('(prefers-reduced-motion: reduce)')
+  const isMobile = useMedia(MQ_NAV)
+  const reduce = useMedia(MQ_REDUCE)
   const active = useActiveSection(SPY_IDS)
   const [open, setOpen] = useState(false)
 
@@ -227,14 +214,14 @@ export default function Header() {
     background: scrolled ? 'rgba(251,249,246,.72)' : 'transparent',
     backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
     WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
-    boxShadow: scrolled ? '0 22px 50px -34px rgba(46,32,18,.55), inset 0 1px 0 rgba(255,255,255,.6)' : 'none',
+    boxShadow: scrolled ? '0 22px 50px -34px rgba(40,28,16,.55), inset 0 1px 0 rgba(255,255,255,.6)' : 'none',
     transition: reduce
       ? 'none'
       : 'background .4s ease, box-shadow .4s ease, border-color .4s ease, padding .35s ease, backdrop-filter .4s ease',
   }
 
   const navLinkPlain = {
-    fontSize: '14px', fontWeight: 500, color: '#6B645D', textDecoration: 'none', transition: 'color .3s',
+    fontSize: '14px', fontWeight: 500, color: LABEL, textDecoration: 'none', transition: 'color .3s',
   }
 
   return (
@@ -303,7 +290,7 @@ export default function Header() {
               </div>
 
               <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center', gap: '14px' }}>
-                <Hoverable as="a" href="#" style={navLinkPlain} hoverStyle={{ color: INK }}>Sign in</Hoverable>
+
                 <Hoverable
                   as="a"
                   href="#join"
@@ -316,7 +303,7 @@ export default function Header() {
                   }}
                   hoverStyle={{ background: INK, transform: 'translateY(-1px)' }}
                 >
-                  Join the club
+                  Request an invitation
                 </Hoverable>
               </div>
             </>
@@ -354,13 +341,14 @@ export default function Header() {
                 padding: 'clamp(12px,2.6vw,16px) 0',
                 borderBottom: '1px solid rgba(21,17,13,.07)',
                 fontSize: 'clamp(28px,8vw,44px)', fontWeight: 800, letterSpacing: '-.03em',
-                color: active === item.id ? ACCENT : INK, textDecoration: 'none',
+                color: INK, textDecoration: 'none',
                 transform: open ? 'translateY(0)' : 'translateY(14px)',
                 opacity: open ? 1 : 0,
                 transition: reduce ? 'none' : `transform .45s cubic-bezier(.2,.7,.2,1) ${0.06 + i * 0.05}s, opacity .45s ease ${0.06 + i * 0.05}s, color .25s`,
               }}
             >
-              <span style={{ fontSize: '13px', fontWeight: 600, color: MUTED_SOFT, letterSpacing: '.14em', minWidth: '26px' }}>
+              {/* The active section is marked by its index number turning ink. */}
+              <span style={{ fontSize: '13px', fontWeight: 600, color: active === item.id ? INK : MUTED_SOFT, letterSpacing: '.14em', minWidth: '26px', transition: 'color .25s' }}>
                 0{i + 1}
               </span>
               {item.label}
@@ -381,11 +369,11 @@ export default function Header() {
             }}
             hoverStyle={{ background: INK, transform: 'translateY(-2px)' }}
           >
-            Join the club
+            Request an invitation
             <ArrowUpRight size={16} />
           </Hoverable>
           <a
-            href="#"
+            href="mailto:members@1percentlifeclub.com"
             onClick={() => setOpen(false)}
             style={{ textAlign: 'center', fontSize: '15px', fontWeight: 600, color: MUTED_SOFT, textDecoration: 'none', padding: '8px' }}
           >

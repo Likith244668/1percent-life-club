@@ -1,10 +1,12 @@
 import { ACCENT, BG, STAGE, INK } from './theme.js'
 import Header from './sections/Header.jsx'
 import Hero from './sections/Hero.jsx'
+import LogoMarquee from './sections/LogoMarquee.jsx'
 import Method from './sections/Method.jsx'
 import Programs from './sections/Programs.jsx'
 import WhyItWorks from './sections/WhyItWorks.jsx'
 import DailyHabits from './sections/DailyHabits.jsx'
+import Ambassadors from './sections/Ambassadors.jsx'
 import Journey from './sections/Journey.jsx'
 import Stories from './sections/Stories.jsx'
 import Belief from './sections/Belief.jsx'
@@ -27,15 +29,19 @@ export default function App() {
       }}
     >
       <Header />
-      <Hero />
-      <Method />
-      <Programs />
-      <WhyItWorks />
-      <DailyHabits />
-      <Journey />
-      <Stories />
-      <Belief />
-      <FinalCTA />
+      <main id="main">
+        <Hero />
+        <LogoMarquee />
+        <Method />
+        <Programs />
+        <WhyItWorks />
+        <DailyHabits />
+        <Ambassadors />
+        <Journey />
+        <Stories />
+        <Belief />
+        <FinalCTA />
+      </main>
       <Footer />
     </div>
   )

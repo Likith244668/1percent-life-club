@@ -6,14 +6,14 @@ import { ArrowUpRight } from '../components/Icons.jsx'
 
 // Primary navigation. Each id maps to a real section anchor on the page.
 const LINKS = [
-  { id: 'method', label: 'Method' },
-  { id: 'programs', label: 'Programs' },
-  { id: 'why', label: 'Why it works' },
+  { id: 'vision', label: 'Vision' },
+  { id: 'pillars', label: 'Pillars' },
+  { id: 'sugar', label: 'On sugar' },
   { id: 'stories', label: 'Stories' },
 ]
 
 // Sections tracked by the scroll-spy (drives the active nav underline).
-const SPY_IDS = ['top', 'method', 'programs', 'why', 'stories', 'belief', 'join']
+const SPY_IDS = ['top', 'problem', 'vision', 'pillars', 'sugar', 'stories', 'join', 'app']
 
 // Height reserved so anchor jumps land below the fixed bar instead of under it.
 const HEADER_OFFSET = 92
@@ -211,10 +211,10 @@ export default function Header() {
     padding: scrolled ? '10px clamp(16px,2.4vw,26px)' : '16px clamp(16px,2.4vw,30px)',
     borderRadius: '18px',
     border: `1px solid ${scrolled ? 'rgba(21,17,13,.07)' : 'transparent'}`,
-    background: scrolled ? 'rgba(251,249,246,.72)' : 'transparent',
+    background: scrolled ? 'rgba(255,255,255,.8)' : 'transparent',
     backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
     WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
-    boxShadow: scrolled ? '0 22px 50px -34px rgba(40,28,16,.55), inset 0 1px 0 rgba(255,255,255,.6)' : 'none',
+    boxShadow: scrolled ? '0 22px 50px -34px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.7)' : 'none',
     transition: reduce
       ? 'none'
       : 'background .4s ease, box-shadow .4s ease, border-color .4s ease, padding .35s ease, backdrop-filter .4s ease',
@@ -257,7 +257,7 @@ export default function Header() {
         style={{
           position: 'fixed', top: 0, left: 0, height: '2px',
           width: `${progress * 100}%`,
-          background: `linear-gradient(90deg, ${ACCENT}, #FF9A4D)`,
+          background: ACCENT,
           borderRadius: '0 2px 2px 0', zIndex: 200,
           transition: reduce ? 'none' : 'width .1s linear',
           opacity: progress > 0.001 ? 1 : 0,
@@ -279,29 +279,29 @@ export default function Header() {
             </>
           ) : (
             <>
-              <nav aria-label="Primary" style={{ justifySelf: 'start', display: 'flex', alignItems: 'center', gap: 'clamp(14px,2vw,30px)', flexWrap: 'wrap' }}>
+              <div style={{ justifySelf: 'start' }}>
+                <Brand onClick={toTop} />
+              </div>
+
+              <nav aria-label="Primary" style={{ justifySelf: 'center', display: 'flex', alignItems: 'center', gap: 'clamp(14px,2vw,30px)', flexWrap: 'wrap' }}>
                 {LINKS.map((item) => (
                   <NavLink key={item.id} item={item} active={active === item.id} onNavigate={navigate} />
                 ))}
               </nav>
 
-              <div style={{ justifySelf: 'center' }}>
-                <Brand onClick={toTop} />
-              </div>
-
               <div style={{ justifySelf: 'end', display: 'flex', alignItems: 'center', gap: '14px' }}>
-
                 <Hoverable
                   as="a"
                   href="#join"
                   onClick={(e) => { e.preventDefault(); navigate('join') }}
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: '8px',
-                    fontSize: '14px', fontWeight: 600, color: '#fff', background: ACCENT,
-                    padding: '11px 20px', borderRadius: '100px', textDecoration: 'none',
-                    transition: 'transform .3s, background .3s',
+                    fontSize: '14px', fontWeight: 600, color: INK, background: 'transparent',
+                    padding: '10px 22px', borderRadius: '100px', textDecoration: 'none',
+                    border: `1.5px solid ${INK}`,
+                    transition: 'transform .3s, background .3s, color .3s',
                   }}
-                  hoverStyle={{ background: INK, transform: 'translateY(-1px)' }}
+                  hoverStyle={{ background: INK, color: '#fff', transform: 'translateY(-1px)' }}
                 >
                   Request an invitation
                 </Hoverable>

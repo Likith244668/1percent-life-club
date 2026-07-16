@@ -1,4 +1,4 @@
-import { INK, MUTED_SOFT, CARD_BORDER, HAIRLINE, SHADOW_CARD, BRONZE } from '../theme.js'
+import { ACCENT, INK, MUTED_SOFT, CARD_BORDER, HAIRLINE, SHADOW_CARD } from '../theme.js'
 import SectionLabel from '../components/SectionLabel.jsx'
 import useReveal, { EASE } from '../components/useReveal.js'
 import { Star } from '../components/Icons.jsx'
@@ -13,17 +13,17 @@ export default function Stories() {
   const { ref, shown, reduce, reveal } = useReveal()
 
   return (
-    <section id="stories" style={{ padding: 'clamp(48px,6vw,88px) clamp(20px,5vw,64px)' }}>
+    <section id="stories" style={{ padding: 'clamp(34px,4.2vw,62px) clamp(20px,5vw,64px)' }}>
       <div ref={ref} style={{ maxWidth: '1340px', margin: '0 auto' }}>
         <div style={{ marginBottom: 'clamp(34px,4vw,56px)', ...reveal(0) }}>
-          <SectionLabel>Member stories</SectionLabel>
+          <SectionLabel>1%er stories</SectionLabel>
           <h2 style={{ margin: 0, fontWeight: 800, fontSize: 'clamp(1.9rem,4vw,3.2rem)', lineHeight: 1.04, letterSpacing: '-.035em' }}>
             Proof, not promises.
           </h2>
         </div>
 
         {/* Featured story */}
-        <div style={{ background: '#fff', border: `1px solid ${CARD_BORDER}`, borderRadius: '24px', padding: 'clamp(16px,1.6vw,22px)', boxShadow: '0 40px 80px -56px rgba(40,28,16,.4)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 'clamp(20px,2.4vw,40px)', alignItems: 'stretch', marginBottom: 'clamp(16px,1.6vw,22px)', ...reveal(100, 'translateY(30px)') }}>
+        <div style={{ background: '#fff', border: `1px solid ${CARD_BORDER}`, borderRadius: '24px', padding: 'clamp(16px,1.6vw,22px)', boxShadow: '0 40px 80px -56px rgba(0,0,0,.32)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(300px,100%),1fr))', gap: 'clamp(20px,2.4vw,40px)', alignItems: 'stretch', marginBottom: 'clamp(16px,1.6vw,22px)', ...reveal(100, 'translateY(30px)') }}>
           <div style={{ position: 'relative', width: '100%', minHeight: 'clamp(300px,32vw,420px)', height: '100%', borderRadius: '18px', overflow: 'hidden' }}>
             <img
               src={storyImg}
@@ -44,7 +44,7 @@ export default function Stories() {
 
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 'clamp(14px,2vw,40px) clamp(14px,2vw,30px) clamp(20px,2vw,40px) 0' }}>
             <div style={{ display: 'flex', gap: '3px', marginBottom: '24px' }}>
-              {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={18} color={BRONZE} />)}
+              {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={18} color={ACCENT} />)}
             </div>
             <p style={{ margin: 0, fontFamily: "'Instrument Serif',serif", fontSize: 'clamp(24px,2.8vw,38px)', lineHeight: 1.32, letterSpacing: '-.01em' }}>
               "I stopped chasing transformations and started stacking days. Down 22&nbsp;kg — and for the first time, it feels permanent."

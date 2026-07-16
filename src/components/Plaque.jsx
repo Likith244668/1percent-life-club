@@ -38,10 +38,11 @@ export default function Plaque({ style }) {
           color: BRONZE,
         }}
       >
-        Gofytt 
-        <span style={{ fontFamily: "'Instrument Serif',serif", fontSize: '13px', letterSpacing: '.12em' }}>
-          
-        </span>
+        Membership{' '}
+        <span style={{ fontFamily: "'Instrument Serif',serif", fontSize: '13px', letterSpacing: '.08em', textTransform: 'none' }}>
+          247 of 250
+        </span>{' '}
+        · By application
       </span>
       <span aria-hidden="true" style={rule} />
     </div>

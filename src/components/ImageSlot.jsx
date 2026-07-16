@@ -77,18 +77,18 @@ export default function ImageSlot({
           inset: 0,
           overflow: 'hidden',
           borderRadius,
-          background: 'linear-gradient(135deg,#EDE2D2 0%,#E7D6C4 48%,#F0CDBA 100%)',
+          background: 'linear-gradient(135deg,#F2F2F1 0%,#E9E9E7 52%,#DEDEDC 100%)',
           outline: over ? `2px solid ${ACCENT}` : 'none',
           outlineOffset: '-2px',
         }}
       >
-        {/* Soft accent glow, matching the original ::after layer */}
+        {/* Soft neutral sheen so the empty slot still reads as a surface */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             background:
-              `radial-gradient(70% 60% at 30% 20%,color-mix(in srgb,${ACCENT} 16%,transparent),transparent 60%)`,
+              'radial-gradient(70% 60% at 30% 20%,rgba(255,255,255,.5),transparent 60%)',
           }}
         />
 
@@ -123,7 +123,7 @@ export default function ImageSlot({
               textAlign: 'center',
               padding: '20px',
               cursor: 'pointer',
-              color: '#8a7a64',
+              color: '#8C8C8C',
               background: 'transparent',
               border: 'none',
               font: 'inherit',
@@ -151,7 +151,7 @@ export default function ImageSlot({
             <span style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '.01em', maxWidth: '80%', lineHeight: 1.4 }}>
               {placeholder}
             </span>
-            <span style={{ fontSize: '11px', color: '#a3937c' }}>Drop or click to add an image</span>
+            <span style={{ fontSize: '11px', color: '#A8A8A8' }}>Drop or click to add an image</span>
           </button>
         )}
       </div>

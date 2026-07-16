@@ -1,40 +1,51 @@
 // Shared design tokens for the 1% Life Club site.
-// Mirrors the CSS custom properties used by the original markup so individual
-// components can reference one source of truth instead of repeating hex codes.
-export const ACCENT = '#FF6B00' // --accent
-export const BG = '#F1EBE3'     // --bg  (page background)
-export const STAGE = '#FBF9F6'  // --stage (raised panels)
-export const INK = '#15110D'    // primary text / dark surfaces
+// Clean editorial system: WHITE page + ORANGE accent + near-BLACK ink.
+// Components import these names, so the whole site re-skins from this one file.
+export const ACCENT = '#FF6B00' // --accent (reserved for primary CTAs + highlights)
+export const BG = '#FFFFFF'     // --bg  (page background)
+export const STAGE = '#F6F6F5'  // --stage (raised / alternating panels — barely-grey)
+export const INK = '#141414'    // primary text / dark surfaces (neutral near-black)
+export const DARK = '#0E0E0E'   // full-black section backgrounds (DailyHabits, CTA, Footer)
 
-// Ink family extensions.
-export const INK_SOFT = '#2B2723'  // hero display lettering
-export const INK_MUTED = '#5C544D' // long-form body on light stage
+// Ink family extensions (now neutral, not warm).
+export const INK_SOFT = '#1A1A1A'  // display lettering
+export const INK_MUTED = '#4A4A4A' // long-form body
 
-// Frequently reused supporting colors.
-export const MUTED = '#79706A'
-export const MUTED_SOFT = '#8A8178'
-export const LABEL = '#6B645D'
-export const CARD_BORDER = '#EFE9E1'
+// Frequently reused supporting greys.
+export const MUTED = '#6B6B6B'
+export const MUTED_SOFT = '#8C8C8C'
+export const LABEL = '#767676'
+export const CARD_BORDER = '#EAEAEA'
 
-// Warm bronze support family — the quiet accent for captions, serif numbers
-// and hairline details (the luxury register; orange stays for primary CTAs).
-export const BRONZE = '#A39B92'
-export const BRONZE_FAINT = '#CFC6BA'
-export const SAND = '#D9D2CA' // link text on dark ink surfaces
+// Retired bronze "luxury register" → neutral greys.
+// (Names kept so existing imports keep working; the warm cast is gone.)
+export const BRONZE = '#9A9A9A'
+export const BRONZE_FAINT = '#D8D8D8'
+export const SAND = '#C9C9C9' // link text on dark ink surfaces
 
-// Hairline rules and borders on cream/stage surfaces
-// (CARD_BORDER stays for borders on white cards).
-export const HAIRLINE = '#E4DDD3'
+// Hairline rules and borders.
+export const HAIRLINE = '#E6E6E6'
 
-// One shadow system — a single warm base at three depths.
-export const SHADOW_CARD = '0 30px 60px -50px rgba(40,28,16,.35)'
-export const SHADOW_CARD_HOVER = '0 40px 70px -45px rgba(40,28,16,.4)'
-export const SHADOW_PANEL = '0 50px 110px -70px rgba(40,28,16,.4)'
+// One shadow system — neutral, light, three depths (clean not heavy).
+export const SHADOW_CARD = '0 1px 2px rgba(0,0,0,.03), 0 18px 40px -28px rgba(0,0,0,.16)'
+export const SHADOW_CARD_HOVER = '0 24px 52px -26px rgba(0,0,0,.24)'
+export const SHADOW_PANEL = '0 40px 90px -70px rgba(0,0,0,.20)'
+
+// Font stacks. Anton = the heavy all-caps grotesque poster headline (ZONIXX look);
+// Archivo = the workhorse UI/sans and secondary display; Instrument Serif = the one
+// retained editorial serif accent (Stories pull-quotes, "one percent").
+export const FONT_SANS = "'Archivo', system-ui, -apple-system, sans-serif"
+export const FONT_DISPLAY = "'Anton', 'Archivo', system-ui, sans-serif"
+export const FONT_SERIF = "'Instrument Serif', serif"
+
+// Radius scale (the ~20px rounded-card motif from the reference).
+export const RADIUS_CARD = 20
+export const RADIUS_PANEL = 'clamp(22px,2.4vw,32px)'
+export const RADIUS_PILL = 100
 
 // Shared media queries.
 export const MQ_MOBILE = '(max-width: 640px)'
 export const MQ_NAV = '(max-width: 880px)'  // header collapse point
-// Hero stack point: below this the content stacks under the image instead of
-// overlaying the "valley" — the valley is too shallow for the overlay there.
+// Below this the hero content stacks under the media card instead of overlaying.
 export const MQ_HERO = '(max-width: 1199px)'
 export const MQ_REDUCE = '(prefers-reduced-motion: reduce)'

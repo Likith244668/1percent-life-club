@@ -1,24 +1,15 @@
-import { INK, MUTED, BRONZE, SAND } from '../theme.js'
+import { DARK, MUTED, SAND } from '../theme.js'
 import Hoverable from '../components/Hoverable.jsx'
 import useReveal from '../components/useReveal.js'
 
 const COLUMNS = [
   {
-    title: 'Programs',
+    title: 'The club',
     links: [
-      { label: 'Strength', href: '#programs' },
-      { label: 'Fat Loss', href: '#programs' },
-      { label: 'Mobility & Yoga', href: '#programs' },
-      { label: 'Home', href: '#programs' },
-    ],
-  },
-  {
-    title: 'Club',
-    links: [
-      { label: 'The method', href: '#method' },
-      { label: 'Stories', href: '#stories' },
-      { label: 'Belief', href: '#belief' },
-      { label: 'Join', href: '#join' },
+      { label: 'Vision & mission', href: '#vision' },
+      { label: 'The five pillars', href: '#pillars' },
+      { label: 'Fight on sugar', href: '#sugar' },
+      { label: 'Member stories', href: '#stories' },
     ],
   },
   {
@@ -26,7 +17,7 @@ const COLUMNS = [
     links: [
       { label: 'Instagram', href: 'https://instagram.com/1percentlifeclub', external: true },
       { label: 'YouTube', href: 'https://youtube.com/@1percentlifeclub', external: true },
-      { label: 'Newsletter', href: '#join' },
+      { label: 'The app · soon', href: '#app' },
       { label: 'Contact', href: 'mailto:members@1percentlifeclub.com' },
     ],
   },
@@ -43,7 +34,7 @@ export default function Footer() {
   const { ref, reveal } = useReveal()
 
   return (
-    <footer style={{ background: INK, color: '#fff', padding: 'clamp(56px,6vw,92px) clamp(20px,5vw,64px) clamp(32px,4vw,48px)' }}>
+    <footer style={{ background: DARK, color: '#fff', padding: 'clamp(56px,6vw,92px) clamp(20px,5vw,64px) clamp(32px,4vw,48px)' }}>
       <div ref={ref} style={{ maxWidth: '1340px', margin: '0 auto', ...reveal(0, 'translateY(22px)') }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(180px,100%),1fr))', gap: 'clamp(36px,4vw,64px)', paddingBottom: 'clamp(44px,5vw,64px)', borderBottom: '1px solid rgba(255,255,255,.14)' }}>
           <div style={{ gridColumn: '1 / -1', maxWidth: '420px' }}>
@@ -51,7 +42,7 @@ export default function Footer() {
               <span style={{ fontWeight: 900, fontSize: '24px', letterSpacing: '-.02em' }}>1%</span>
               <span style={{ fontWeight: 600, fontSize: '14px', letterSpacing: '.06em' }}>LIFE CLUB</span>
             </div>
-            <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.65, color: BRONZE, maxWidth: '340px' }}>
+            <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.65, color: 'rgba(255,255,255,.62)', maxWidth: '340px' }}>
               A private members' club for people who compound — one percent, every single day. Membership by application.
             </p>
           </div>

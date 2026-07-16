@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import { ACCENT, STAGE, INK, MUTED, INK_SOFT, INK_MUTED, HAIRLINE, SHADOW_PANEL, MQ_HERO, MQ_REDUCE } from '../theme.js'
+import { ACCENT, INK, INK_MUTED, LABEL, FONT_DISPLAY, MQ_REDUCE, MQ_MOBILE } from '../theme.js'
 import Hoverable from '../components/Hoverable.jsx'
-import Plaque from '../components/Plaque.jsx'
+import Divider from '../components/Divider.jsx'
+import MediaCard from '../components/MediaCard.jsx'
+import LogoMarquee from './LogoMarquee.jsx'
 import { EASE, useMedia } from '../components/useReveal.js'
-import { ArrowUpRight, Play } from '../components/Icons.jsx'
-import heroImg from '../assets/hero.png'
+import { ArrowUpRight } from '../components/Icons.jsx'
+import looksImg from '../assets/looks.png'
 
 /* ------------------------------------------------------------------ hooks */
 
@@ -12,7 +14,6 @@ import heroImg from '../assets/hero.png'
 function useMounted() {
   const [ready, setReady] = useState(false)
   useEffect(() => {
-    // Double rAF: let the initial (hidden) styles paint before transitioning.
     let raf2 = 0
     const raf1 = requestAnimationFrame(() => { raf2 = requestAnimationFrame(() => setReady(true)) })
     return () => { cancelAnimationFrame(raf1); cancelAnimationFrame(raf2) }
@@ -20,41 +21,30 @@ function useMounted() {
   return ready
 }
 
-/* --------------------------------------------------------------- overlay text */
+/* --------------------------------------------------------------- shared bits */
 
-// Visually hidden but readable by screen readers / search engines.
-const srOnly = {
-  position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px',
-  overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0,
+const eyebrow = {
+  margin: 0,
+  fontSize: '12px',
+  fontWeight: 600,
+  letterSpacing: '.28em',
+  textTransform: 'uppercase',
+  color: LABEL,
 }
+
+// One display size shared by the top headline and the media-card overlay so
+// "BETTER EVERY DAY." and "INSIDE AND OUT." read at exactly the same scale.
+const HEADLINE_SIZE = 'clamp(3.5rem,11.5vw,9rem)'
 
 /* ------------------------------------------------------------------- section */
 
 export default function Hero() {
-  const isMobile = useMedia(MQ_HERO)
   const reduce = useMedia(MQ_REDUCE)
+  const mobile = useMedia(MQ_MOBILE)
   const ready = useMounted()
 
-  // Full-bleed offsets for the illustration. The negative top margin always
-  // cancels the section's top padding; beyond that the two viewports differ:
-  //  • Desktop — the image is tall with a big empty "sky", so we crop into it
-  //    to pull the figure/headline up near the header.
-  //  • Mobile  — the image is short and the fixed header is proportionally
-  //    taller, so cropping would jam the headline under it. Instead we leave a
-  //    small top gap (the transparent sky just reads as more cream/glow, so the
-  //    full-bleed look is kept) so the headline clears the header.
-  // Desktop also crops the tall empty foreground "floor" below the chasm (the
-  // negative bottom margin trims it against the card via overflow:hidden) so the
-  // hero doesn't trail off into dead space under the content.
-  const floorCrop = 'clamp(60px,8vw,150px)'
-  const figureMargin = isMobile
-    ? 'calc(clamp(64px,6vw,84px) * -1 + clamp(18px,5vw,34px)) calc(clamp(20px,4vw,56px) * -1) 0'
-    : `calc((clamp(64px,6vw,84px) + clamp(30px,5vw,96px)) * -1) calc(clamp(20px,4vw,56px) * -1) calc(${floorCrop} * -1)`
-
-  // Entrance helper: fades + moves an element from `from` to its resting
-  // transform `to`, on a shared easing curve with a stagger `delay` (ms).
-  // Under reduced motion everything snaps straight to its final state.
-  const enter = (delay, from, to = 'none') =>
+  // Entrance helper: fade + rise, shared easing, staggered by delay (ms).
+  const enter = (delay, from = 'translateY(20px)', to = 'none') =>
     reduce
       ? { opacity: 1, transform: to }
       : {
@@ -64,94 +54,22 @@ export default function Hero() {
           willChange: 'opacity, transform',
         }
 
-  // The value-prop + CTAs + social proof. Rendered once; positioned inside the
-  // image's lower "valley" on desktop, and stacked below the image on mobile.
-  const content = (
-    <div
-      style={
-        isMobile
-          ? { position: 'relative', zIndex: 3, maxWidth: '600px', margin: '0 auto', padding: 'clamp(22px,6vw,30px) clamp(18px,5vw,26px) 0', textAlign: 'center' }
-          : { position: 'absolute', zIndex: 3, left: 0, right: 0, bottom: 'clamp(128px,25%,300px)', maxWidth: '560px', margin: '0 auto', padding: '0 24px', textAlign: 'center' }
-      }
+  const solidCta = (
+    <Hoverable
+      as="a"
+      href="#join"
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: '9px',
+        fontSize: '15px', fontWeight: 600, color: '#fff', background: ACCENT,
+        padding: '16px 30px', borderRadius: '100px', textDecoration: 'none',
+        boxShadow: '0 18px 40px -22px rgba(255,107,0,.9)',
+        transition: 'transform .3s, background .3s, box-shadow .3s',
+      }}
+      hoverStyle={{ background: INK, transform: 'translateY(-2px)', boxShadow: '0 22px 46px -22px rgba(20,20,20,.5)' }}
     >
-      {/* Value proposition — brand voice, with the accent word set in the
-          site's signature Instrument Serif italic (matches the Belief section). */}
-      <p
-        style={{
-          margin: 0,
-          fontSize: 'clamp(15px,1.55vw,18px)',
-          lineHeight: 1.55,
-          color: INK_MUTED,
-          maxWidth: '46ch',
-          marginInline: 'auto',
-          ...enter(520, 'translateY(16px)'),
-        }}
-      >
-        No extremes. No pressure. Just the quiet discipline of getting{' '}
-        <span style={{ fontFamily: "'Instrument Serif',serif", fontStyle: 'italic', fontWeight: 400, color: INK, fontSize: '1.16em' }}>
-          one percent
-        </span>{' '}
-        better — until it's simply who you are.
-      </p>
-
-      {/* Dual CTA */}
-      <div
-        style={{
-          display: 'flex', flexWrap: 'wrap', gap: '13px', justifyContent: 'center',
-          marginTop: 'clamp(18px,2.4vw,26px)',
-          ...enter(620, 'translateY(16px)'),
-        }}
-      >
-        <Hoverable
-          as="a"
-          href="#join"
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: '9px',
-            fontSize: '15px', fontWeight: 600, color: '#fff', background: ACCENT,
-            padding: '16px 30px', borderRadius: '100px', textDecoration: 'none',
-            boxShadow: '0 18px 40px -22px rgba(255,107,0,.95)',
-            transition: 'transform .3s, background .3s, box-shadow .3s',
-          }}
-          hoverStyle={{ background: INK, transform: 'translateY(-2px)', boxShadow: '0 22px 46px -22px rgba(21,17,13,.6)' }}
-        >
-          Request an invitation
-          <ArrowUpRight size={16} />
-        </Hoverable>
-
-        <Hoverable
-          as="a"
-          href="#method"
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: '11px',
-            fontSize: '15px', fontWeight: 600, color: INK,
-            background: 'rgba(255,255,255,.6)',
-            border: '1px solid rgba(21,17,13,.12)',
-            padding: '8px 20px 8px 8px', borderRadius: '100px', textDecoration: 'none',
-            backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-            transition: 'transform .3s, background .3s, border-color .3s',
-          }}
-          hoverStyle={{ background: '#fff', transform: 'translateY(-2px)', borderColor: 'rgba(21,17,13,.22)' }}
-        >
-          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '34px', height: '34px', borderRadius: '50%', background: INK, color: '#fff' }}>
-            <Play size={11} color="#fff" />
-          </span>
-          How it works
-        </Hoverable>
-      </div>
-
-      {/* The membership plaque — the quiet scarcity signature. On desktop it
-          hangs below the bottom-anchored block (top: 100%) so it can never
-          grow the block upward into the falling "T"; stacked, it's in flow. */}
-      {isMobile ? (
-        <div style={{ marginTop: 'clamp(16px,2vw,22px)', ...enter(720, 'translateY(12px)') }}>
-          <Plaque />
-        </div>
-      ) : (
-        <div style={{ position: 'absolute', top: 'calc(100% + 16px)', left: 0, right: 0, display: 'flex', justifyContent: 'center', ...enter(720, 'translateY(12px)') }}>
-          <Plaque />
-        </div>
-      )}
-    </div>
+      Request an invitation
+      <ArrowUpRight size={16} />
+    </Hoverable>
   )
 
   return (
@@ -159,177 +77,65 @@ export default function Hero() {
       id="top"
       style={{
         position: 'relative',
-        margin: 'clamp(10px,1.3vw,18px)',
-        background: STAGE,
-        border: `1px solid ${HAIRLINE}`,
-        borderRadius: 'clamp(22px,2.4vw,36px)',
-        boxShadow: SHADOW_PANEL,
-        padding: 'clamp(64px,6vw,84px) clamp(20px,4vw,56px) clamp(26px,3.4vw,48px)',
-        overflow: 'hidden',
+        padding: 'clamp(100px,11vh,140px) clamp(20px,5vw,64px) clamp(56px,7vw,88px)',
+        textAlign: 'center',
       }}
     >
-      {/* Keyframes that can't be expressed inline: the ambient glow breathe,
-          the scroll-cue bob, and the members-pill pulse. All gated on
-          !reduce below, so reduced-motion users get a completely still hero. */}
-      <style>{`
-        @keyframes lcHeroGlow { 0%,100%{opacity:.78;transform:translateX(-50%) scale(1);} 50%{opacity:1;transform:translateX(-50%) scale(1.05);} }
-        @keyframes lcCue { 0%,100%{transform:translateY(0);opacity:.55;} 50%{transform:translateY(7px);opacity:1;} }
-      `}</style>
+      {/* ------------------------------------------------ top: eyebrow + H1 */}
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <p style={{ ...eyebrow, ...enter(0, 'translateY(14px)') }}>A private members&rsquo; club</p>
 
-      {/* Real headline for screen readers & SEO — the visual statement lives in
-          the aria-hidden image typography below. */}
-      <h1 style={srOnly}>I can do it. The 1% Life Club — a private members' club of 250 people compounding one percent a day.</h1>
+        <h1
+          style={{
+            margin: 'clamp(18px,2.4vw,26px) 0 0',
+            fontFamily: FONT_DISPLAY, fontWeight: 400,
+            fontSize: HEADLINE_SIZE, lineHeight: .9,
+            letterSpacing: '.005em', textTransform: 'uppercase', color: INK,
+            ...enter(90),
+          }}
+        >
+          Better<br />Every&nbsp;Day.
+        </h1>
+      </div>
 
-      {/* Ambient accent glow behind the headline */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: '-12%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'min(960px,94%)',
-          height: '540px',
-          background: `radial-gradient(58% 60% at 50% 42%,color-mix(in srgb,${ACCENT} 10%,transparent),transparent 72%)`,
-          pointerEvents: 'none',
-          zIndex: 0,
-          animation: reduce ? 'none' : 'lcHeroGlow 7s ease-in-out infinite',
-        }}
-      />
+      {/* ------------------------------------------------ big media card */}
+      <div style={{ maxWidth: '1340px', margin: 'clamp(12px,1.8vw,22px) auto 0', ...enter(200) }}>
+        <MediaCard
+          src={looksImg}
+          headline={<>Inside<br />and out.</>}
+          headlineSize={HEADLINE_SIZE}
+          caption="We help you get one percent better — steadily, quietly — until it&rsquo;s simply who you are."
+          chip="2 min"
+          ratio={mobile ? '4 / 5' : '2.4 / 1'}
+          radius={32}
+          placeholder="Hero image / short film"
+        />
+      </div>
 
-      {/* Hero illustration — full-bleed to the card edges (the section's
-          overflow:hidden + radius clips it to the rounded card). Negative
-          margins cancel the section padding so there's no side gap. */}
-      <figure
-        style={{
-          position: 'relative',
-          zIndex: 2,
-          margin: figureMargin,
-        }}
-      >
-        {/* Inner "stage" holds the image + everything positioned against it.
-            Keeping the % overlays scoped here (not the whole figure) means the
-            mobile content stacked below can't push the lettering off the image. */}
-        <div style={{ position: 'relative' }}>
-          <img
-            src={heroImg}
-            alt="A figure leaping across the gap between two cliffs"
-            width={1536}
-            height={1024}
-            fetchPriority="high"
-            decoding="async"
-            style={{ display: 'block', width: '100%', height: 'auto', ...enter(60, 'scale(1.05)') }}
-          />
+      {/* ------------------------------------------ roll-call, under the image */}
+      <div style={{ marginTop: 'clamp(20px,3vw,36px)' }}>
+        <LogoMarquee />
+      </div>
 
-          {/* Light fade on the left and right edges so the scene melts into the
-              cream card instead of ending on a hard grey edge. */}
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: `linear-gradient(90deg,${STAGE} 0%,color-mix(in srgb,${STAGE} 55%,transparent) 3%,transparent 10%,transparent 90%,color-mix(in srgb,${STAGE} 55%,transparent) 97%,${STAGE} 100%)`,
-              pointerEvents: 'none',
-              zIndex: 1,
-            }}
-          />
+      {/* ------------------------------------------------ sparkle + mission */}
+      <Divider style={{ margin: 'clamp(56px,7vw,96px) auto clamp(30px,4vw,46px)' }} />
 
-          {/* The image lettering is decorative — the real <h1> above carries the
-              text to assistive tech, so this block is aria-hidden. */}
-          <div aria-hidden="true">
-            {/* "I CAN" — left cliff, bold sans. Anchored by baseline
-                (translateY -100%) so it lines up with "DO IT"; slides in from
-                its cliff on load. */}
-            <span
-              style={{
-                position: 'absolute',
-                top: '42.5%',
-                left: 'clamp(16px,7%,120px)',
-                fontWeight: 900,
-                fontSize: 'clamp(1.9rem,8.6vw,8rem)',
-                letterSpacing: '-.02em',
-                lineHeight: 1,
-                color: INK_SOFT,
-                pointerEvents: 'none',
-                zIndex: 2,
-                ...enter(320, 'translateY(-100%) translateX(-46px)', 'translateY(-100%)'),
-              }}
-            >
-              I CAN
-            </span>
-
-            {/* "DO IT" — right cliff. Playfair Display italic Didone to balance
-                the black "I CAN". Same baseline; slides in from the right. */}
-            <span
-              style={{
-                position: 'absolute',
-                top: '41.2%',
-                right: 'clamp(16px,6%,110px)',
-                fontFamily: "'Playfair Display',serif",
-                fontStyle: 'italic',
-                fontWeight: 700,
-                fontSize: 'clamp(2rem,8.4vw,8.4rem)',
-                letterSpacing: '-.005em',
-                lineHeight: 1,
-                color: INK_SOFT,
-                pointerEvents: 'none',
-                zIndex: 2,
-                ...enter(400, 'translateY(-100%) translateX(46px)', 'translateY(-100%)'),
-              }}
-            >
-              DO IT
-            </span>
-
-            {/* The "T" of CAN'T — the emotional beat. It drops from the headline
-                and rotates into the chasm on top of the shattered debris,
-                arriving after the two words have settled. */}
-            <span
-              style={{
-                position: 'absolute',
-                top: '48%',
-                left: '45%',
-                fontWeight: 900,
-                fontSize: 'clamp(2.3rem,8vw,7.5rem)',
-                letterSpacing: '-.02em',
-                lineHeight: 1,
-                color: INK_SOFT,
-                pointerEvents: 'none',
-                zIndex: 2,
-                ...enter(660, 'translateX(-50%) translateY(-170px) rotate(-38deg)', 'translateX(-50%) rotate(25deg)'),
-              }}
-            >
-              T
-            </span>
-          </div>
-
-          {/* Desktop: content overlays the empty valley in the image */}
-          {!isMobile && content}
-
-          {/* Scroll cue (desktop only) — a quiet invitation to explore on. */}
-          {!isMobile && (
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute', left: 0, right: 0, bottom: `calc(${floorCrop} + clamp(16px,2vw,40px))`, zIndex: 3,
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-                color: MUTED, ...enter(900, 'translateY(10px)'),
-              }}
-            >
-              <span style={{ fontSize: '10.5px', fontWeight: 600, letterSpacing: '.24em', textTransform: 'uppercase' }}>Scroll</span>
-              <svg
-                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                style={{ animation: reduce ? 'none' : 'lcCue 1.8s ease-in-out infinite' }}
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile: content stacks below the image (never overlaps the art) */}
-        {isMobile && content}
-      </figure>
+      <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+        <h2
+          style={{
+            margin: 0, fontFamily: FONT_DISPLAY, fontWeight: 400,
+            fontSize: 'clamp(1.9rem,5vw,3.6rem)', lineHeight: 1, letterSpacing: '.01em',
+            textTransform: 'uppercase', color: INK,
+          }}
+        >
+          Progress over perfection.
+        </h2>
+        <p style={{ margin: 'clamp(16px,2vw,22px) auto clamp(24px,3vw,32px)', maxWidth: '54ch', fontSize: 'clamp(15px,1.5vw,17px)', lineHeight: 1.65, color: INK_MUTED }}>
+          A private circle of 250 founders, doctors and leaders, compounding one percent a
+          day. Membership by application — a few seats open each quarter.
+        </p>
+        {solidCta}
+      </div>
     </section>
   )
 }
